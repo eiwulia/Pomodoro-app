@@ -1,0 +1,50 @@
+{
+    "name": "pomodoro",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@testing-library/jest-dom": "^4.2.4",
+        "@testing-library/react": "^9.3.2",
+        "@testing-library/user-event": "^7.1.2",
+        "body-parser": "^1.19.0",
+        "dotenv": "^8.2.0",
+        "moment": "^2.24.0",
+        "passport": "^0.4.1",
+        "passport-google-oauth": "^2.0.0",
+        "query-string": "^6.10.1",
+        "react": "^16.12.0",
+        "react-beautiful-dnd": "^12.2.0",
+        "react-dom": "^16.12.0",
+        "react-router-dom": "^5.1.2",
+        "react-scripts": "3.3.0",
+        "semantic-ui-react": "^0.88.2",
+        "uuid": "^3.3.3"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+    "main": "index.js",
+    "devDependencies": {},
+    "author": "Ieva",
+    "license": "ISC",
+    "proxy": "http://localhost:4000"
+}

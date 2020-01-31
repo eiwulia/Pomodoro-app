@@ -1,0 +1,19 @@
+/* .ui.secondary.menu .item.login-button {
+    border: 1px #1b1c1d solid;
+} */
+
+.ui.secondary.menu .item .logo-link:hover {
+    background-color: transparent;
+}
+
+.centered-wrapper {
+    text-align: center;
+}
+
+ol {
+    list-style-position: inside;
+}
+
+.ui.raised.segment {
+    margin: 0 7rem;
+}

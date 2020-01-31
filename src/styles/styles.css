@@ -1,0 +1,48 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-flow: column;
+    text-rendering: optimizeLegibility;
+}
+
+main {
+    flex: 1;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.wrapper {
+    display: flex;
+    /* margin: 0 auto; */
+    width: 100%;
+    min-height: 600px;
+    /* justify-content: center;
+    flex-wrap: wrap; */
+}
+
+.my-container {
+    /* justify-content: space-around; */
+    flex: 1;
+    margin: 10px;
+}
+
+/* .container > div {
+    flex: 1 1 auto;
+} */
+
+footer {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+@import "./components/login.css";
+@import "./components/header-footer.css";
+@import "./components/dialog.css";
+@import "./components/todos.css";
+@import "./components/pomodoro.css";
+@import "./components/loader.css";

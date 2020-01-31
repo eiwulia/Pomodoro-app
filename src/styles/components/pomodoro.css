@@ -1,0 +1,66 @@
+.pomodoro-container {
+    background-color: #ffff;
+    border: 1px solid #d4d4d5;
+    border-radius: 0.25rem;
+}
+
+.pomodoro-inner-container {
+    height: 100%;
+    /* background-image: url("../../assets/tomatoe.png"); */
+    background-position: center;
+    background-repeat: no-repeat;
+    /* position: relative; */
+    position: fixed;
+    justify-content: center;
+    right: 25%;
+}
+
+.pomodoro-inner-container > .content-container {
+    text-align: center;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#progressInput {
+    margin: 20px auto;
+    width: 60%;
+}
+
+.circle-background,
+.circle-progress {
+    fill: none;
+}
+
+.circle-background {
+    stroke: #ddd;
+}
+
+.circle-progress {
+    /* stroke: red; */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.circle-text {
+    font-size: 3em;
+    font-weight: bold;
+    /* fill: red; */
+}
+
+/* styles from newer */
+.number-spinner {
+    width: 10em;
+    margin: 0 auto;
+}
+
+.form-control {
+    font-family: serif;
+    font-size: 1.8em;
+}
+
+.start-btn,
+.reset-btn {
+    margin-top: 30px;
+}
