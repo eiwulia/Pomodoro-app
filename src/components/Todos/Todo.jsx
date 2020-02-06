@@ -3,10 +3,27 @@ import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import TodoOptionsDropdown from "./TodoOptionsDropdown";
 import EditTodoModal from "./EditTodoModal";
+import { useEffect } from "react";
 const moment = require("moment");
 
-const Todo = ({ todo, handleListUpdate, index, user, handleUserMessage }) => {
+const Todo = ({
+    user,
+    todo,
+    handleListUpdate,
+    index,
+    handleUserMessage,
+    handleSelectedTodo,
+    tomatoePoints,
+    tomatoeTodoId
+}) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [tomatoes, setTomatoes] = useState(todo.tomatoes);
+
+    useEffect(() => {
+        if (todo._id === tomatoeTodoId && tomatoePoints) {
+            setTomatoes(tomatoePoints);
+        }
+    }, [tomatoePoints, todo._id, tomatoeTodoId]);
 
     const handleEditClick = bool => setIsEditing(bool);
 
@@ -21,17 +38,14 @@ const Todo = ({ todo, handleListUpdate, index, user, handleUserMessage }) => {
         return momentDayDiference;
     };
 
-    let userName;
-    if (user) {
-        userName = user.userName;
-        console.log("user name: ", userName);
-    } else {
-        console.log("no user name...");
-    }
+    const handleDoubleClick = e => {
+        console.log("double click", todo);
+        handleSelectedTodo(todo);
+    };
 
     return (
-        <div>
-            <Draggable draggableId={`${todo.id}`} index={index} key={todo.id}>
+        <div onDoubleClick={e => handleDoubleClick(e)}>
+            <Draggable draggableId={`${todo._id}`} index={index} key={todo._id}>
                 {(provided, snapshot) => (
                     <div
                         className="ui cards"
@@ -64,15 +78,10 @@ const Todo = ({ todo, handleListUpdate, index, user, handleUserMessage }) => {
                                 <div className="center aligned description">
                                     {todo.description}
                                 </div>
-                                {user ? (
-                                    <div>HEJ user exists</div>
-                                ) : (
-                                    <div>No user</div>
-                                )}
                             </div>
                             <div className="extra content">
-                                <i className="trophy icon"></i>
-                                {todo.tomatoes} tomatoes
+                                <i className="tomatoe-icon icon"></i>
+                                {tomatoes} tomatoes
                             </div>
                         </div>
                     </div>

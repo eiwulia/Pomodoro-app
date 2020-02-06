@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CirularProgressBar from "./CircularProgressBar";
-// import Timer from "./Timer";
 
-const MainComponent = () => {
+const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
     const formatSeconds = secLeft => {
         // Pause 1 sec at end of cycle by showing 00:00 when time is -1 sec
         const cleanSec = Math.max(0, secLeft);
@@ -11,10 +10,10 @@ const MainComponent = () => {
         return minutes + ":" + seconds;
     };
 
-    const [workMinutes] = useState(25);
+    const [workMinutes] = useState(0.2);
     const [workColor] = useState("red");
-    const [breakMinutes] = useState(5);
-    const [breakColor] = useState("yellow");
+    const [breakMinutes] = useState(0.2);
+    const [breakColor] = useState("green");
     const [countDownTime, setCountDownTime] = useState(workMinutes);
     const [secondsLeft, setSecondsLeft] = useState(countDownTime * 60);
     const [timeLeft, setTimeLeft] = useState(formatSeconds(workMinutes * 60));
@@ -22,6 +21,8 @@ const MainComponent = () => {
     const [cycle, setCycle] = useState("work");
     const [progressColor, setProgressColor] = useState(workColor);
     const [isActive, setIsActive] = useState(false);
+
+    const [count, setCount] = useState(0);
 
     const handleStartClick = () => {
         console.log("start-pause handler");
@@ -40,33 +41,63 @@ const MainComponent = () => {
     };
 
     useEffect(() => {
+        if (selectedTodo) {
+            setCount(selectedTodo.tomatoes);
+            handleResetClick();
+        }
+    }, [selectedTodo]);
+
+    useEffect(() => {
+        if (selectedTodo) {
+            handleTomatoesPoints(selectedTodo._id, count);
+        }
+    }, [selectedTodo, count]);
+
+    useEffect(() => {
+        const calculatePercentage = () => {
+            const initTime = countDownTime * 60;
+            const pct = ((initTime - secondsLeft) / initTime) * 100;
+            return pct;
+        };
         let interval = null;
+
         if (isActive) {
             interval = setInterval(() => {
                 setSecondsLeft(secondsLeft - 1);
                 setTimeLeft(formatSeconds(secondsLeft));
                 setPercentage(calculatePercentage());
+                console.log("count: ", count);
 
-                if (secondsLeft === -1) {
-                    console.log("ding ding dong!");
+                if (secondsLeft === 0) {
+                    console.log("ding ding dong!", count);
                     const workCycle = cycle === "work" ? "break" : "work";
                     const countDownTime =
                         workCycle === "work" ? workMinutes : breakMinutes;
                     const progressColor =
                         workCycle === "work" ? workColor : breakColor;
                     const secondsLeft = countDownTime * 60;
-                    // const audio = new Audio(' http://soundbible.com/grab.php?id=2148&type=mp3');
-                    // audio.play();
                     setCycle(workCycle);
                     setSecondsLeft(secondsLeft);
                     setCountDownTime(countDownTime);
                     setProgressColor(progressColor);
                     setTimeLeft(formatSeconds(secondsLeft));
                     setPercentage(calculatePercentage());
+
+                    if (workCycle === "break") {
+                        setCount(count + 1);
+                    }
                 }
-                // console.log(
-                //     `countDownTime: ${countDownTime}, secondsLeft: ${secondsLeft}, cycle: ${cycle}, timeLeft: ${timeLeft}, color: ${progressColor}`
-                // );
+
+                if (cycle === "work" && secondsLeft === 1) {
+                    // const audio = new Audio(
+                    //     "http://soundbible.com/grab.php?id=2103&type=wav"
+                    // );
+                    const audio = new Audio(
+                        " http://soundbible.com/grab.php?id=2190&type=mp3"
+                    );
+
+                    audio.play();
+                }
             }, 1000);
         } else if (!isActive && secondsLeft !== 0) {
             clearInterval(interval);
@@ -79,14 +110,11 @@ const MainComponent = () => {
         breakMinutes,
         cycle,
         workColor,
-        workMinutes
+        workMinutes,
+        selectedTodo,
+        count,
+        countDownTime
     ]);
-
-    const calculatePercentage = () => {
-        const initTime = countDownTime * 60;
-        const pct = ((initTime - secondsLeft) / initTime) * 100;
-        return pct;
-    };
 
     return (
         <div className="my-container pomodoro-container">
@@ -102,12 +130,20 @@ const MainComponent = () => {
                 </div>
 
                 <div className="content-container">
-                    <h1>Todo title</h1>
-                    <p>
-                        Todo description that is not short, but not very long
-                        either. Lagom
-                    </p>
-
+                    {selectedTodo ? (
+                        <h1>{selectedTodo.title}</h1>
+                    ) : (
+                        <h1>No task selected</h1>
+                    )}
+                    {selectedTodo ? (
+                        <span>
+                            <p>{selectedTodo.description}</p>
+                            <p>{selectedTodo.tomatoes}</p>
+                            <p>count: {count}</p>
+                        </span>
+                    ) : (
+                        <p>Double click on a task to select it</p>
+                    )}
                     <h1
                         className="circle-text"
                         style={{

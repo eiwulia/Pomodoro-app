@@ -39,3 +39,22 @@
     z-index: 1;
     width: 90%;
 } */
+
+.tomatoe-icon {
+    background: url("https://www.svgrepo.com/show/120941/tomato.svg");
+    background-repeat: no-repeat;
+}
+
+.my-container > div.ui.bottom.attached.segment > div > div.ui.attached.segment {
+    min-height: 30rem;
+}
+
+.todo-centered-content {
+    text-align: center;
+    position: relative;
+    top: 10rem;
+}
+
+.todo-centered-content > p {
+    line-height: 2rem;
+}

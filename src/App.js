@@ -11,15 +11,14 @@ import Footer from "./components/Nav/footer/Footer";
 import "./styles/styles.css";
 
 const App = () => {
-    let location = useLocation();
-    // console.log("location is: ", location);
     const [user, setUser] = useState(null);
 
     let history = useHistory();
+    let location = useLocation();
 
     useEffect(() => {
         //check first if user is saved in local storage
-        const user = JSON.parse(localStorage.getItem("user"));
+        let user = JSON.parse(localStorage.getItem("user"));
         // console.log("what do i get from loal storage?, ", user);
         if (user) {
             // console.log("user exists");
@@ -31,6 +30,7 @@ const App = () => {
         // console.log("query: ", query);
 
         if (query && query.user && query.email) {
+            console.log("creating user");
             let user = {
                 userEmail: query.email,
                 userId: query.user,
@@ -39,7 +39,7 @@ const App = () => {
             window.localStorage.setItem("user", JSON.stringify(user));
             history.push("/");
         }
-    }, []);
+    }, [history, location.search]);
 
     const userStateUpdater = updater => {
         setUser(updater);

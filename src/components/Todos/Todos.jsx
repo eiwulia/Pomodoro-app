@@ -1,48 +1,29 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Todo from "./Todo";
 import AddTodo from "./AddTodo";
 import Loader from "../Loader";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import UserMessage from "./UserMessage";
 
-const Todos = ({ user }) => {
+const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
     const [todoList, setTodoList] = useState([]);
-    const [addingTodo, setAddingTodo] = useState(false);
     const [listUpdater, setListUpdater] = useState({});
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState(null);
 
     const handleUserMessage = status => {
         setStatus(status);
+        setTimeout(() => {
+            setStatus(null);
+        }, 2000);
     };
 
     const handleListUpdate = value => setListUpdater(value);
 
-    const myRef = useRef();
-    const handleClickOutside = e => {
-        // let buttonText = "Add a todo";
-        // || e.target.textContent === buttonText
-        if (myRef.current && !myRef.current.contains(e.target)) {
-            setAddingTodo(false);
-        }
-    };
-
-    const handleClickInside = () => setAddingTodo(true);
-
     useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () =>
-            document.removeEventListener("mousedown", handleClickOutside);
-    });
-
-    useEffect(() => {
-        // let start = performance.now();
-
         let url = "/api/getAllTodos";
         fetch(url, { method: "GET" })
             .then(response => response.json())
             .then(json => {
-                // let diff = performance.now() - start;
-                // console.log("Got data from API:", json, "It took X ms", diff);
                 setTodoList(json.body);
             })
             .catch(error => {
@@ -62,12 +43,11 @@ const Todos = ({ user }) => {
             index={index}
             user={user}
             handleUserMessage={handleUserMessage}
+            handleSelectedTodo={handleSelectedTodo}
+            tomatoePoints={tomatoePoints}
+            tomatoeTodoId={tomatoeTodoId}
         />
     ));
-
-    const isAddingTodo = bool => {
-        setAddingTodo(bool);
-    };
 
     const onDragEnd = result => {
         console.log("drag end event");
@@ -92,11 +72,36 @@ const Todos = ({ user }) => {
         const [removed] = list.splice(source.index, 1);
         list.splice(destination.index, 0, removed);
 
-        // console.log("list is: ", list);
+        console.log("list is: ", list);
 
         setTodoList(list);
-        //send updated list order to mongoDB???
     };
+
+    const saveOrderToDb = () => {
+        console.log("save order to db");
+    };
+
+    let todosContent;
+    if (!user) {
+        todosContent = (
+            <div className="todo-centered-content">
+                <h3> Hej!</h3>
+                <p>Log in now to start using pomodoro app!</p>
+            </div>
+        );
+    } else if (user && !todos) {
+        todosContent = (
+            <div className="todo-centered-content">
+                <h3>Hi {user.userName}!</h3>
+                <p>
+                    Start working on your goals by creating a todo. All you need
+                    to do is click on a plus button above and add a new task!
+                </p>
+            </div>
+        );
+    } else if (user && todos) {
+        todosContent = todos;
+    }
 
     return (
         <div className="my-container">
@@ -104,48 +109,41 @@ const Todos = ({ user }) => {
                 <span className={`item active`}>To Do's</span>
             </div>
             <div className="ui bottom attached segment">
-                <UserMessage status={status}></UserMessage>
+                {status ? <UserMessage status={status}></UserMessage> : null}
                 <div>
-                    {!addingTodo ? (
-                        <div
-                            className="ui top attached vertical animated button"
-                            tabIndex="0"
-                            onClick={() => isAddingTodo(true)}
-                        >
-                            <div className="hidden content">Add a todo</div>
-                            <div className="visible content">
-                                <i className="plus icon"></i>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="ui attached segment">
-                            <span ref={myRef} onClick={handleClickInside}>
-                                <AddTodo
-                                    isAddingTodo={isAddingTodo}
-                                    handleListUpdate={handleListUpdate}
-                                    handleUserMessage={handleUserMessage}
-                                />
-                            </span>
-                        </div>
-                    )}
+                    <AddTodo
+                        handleListUpdate={handleListUpdate}
+                        handleUserMessage={handleUserMessage}
+                        user={user}
+                    />
                     <div className="ui attached segment">
                         {!todos || todos.length === 0 ? (
                             <Loader></Loader>
-                        ) : (
-                            <DragDropContext onDragEnd={onDragEnd}>
-                                <Droppable droppableId="droppable">
-                                    {provided => (
-                                        <div
-                                            {...provided.droppableProps}
-                                            ref={provided.innerRef}
-                                        >
-                                            {todos}
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
-                            </DragDropContext>
-                        )}
+                        ) : null}
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <Droppable droppableId="droppable">
+                                {provided => (
+                                    <div
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                    >
+                                        {/* {todos} */}
+                                        {todosContent}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                        {/* )} */}
+                    </div>
+                    <div
+                        className={`ui bottom attached button ${
+                            user ? "" : "disabled"
+                        }`}
+                        tabIndex="0"
+                        onClick={saveOrderToDb}
+                    >
+                        Save todo order
                     </div>
                 </div>
             </div>
@@ -154,52 +152,6 @@ const Todos = ({ user }) => {
 };
 
 export default Todos;
-
-// const [activeTab, setActiveTab] = useState("todos");
-
-/* <span
-className={`item ${
-    activeTab === "history" ? "active" : ""
-}`}
-onClick={() => setActiveTab("history")}
->
-History
-</span> */
-// else if (activeTab === "history") {
-//     tabContent = <div>No history yet</div>;
-// }
-
-// let tabContent;
-// if (activeTab === "todos") {
-//     tabContent = (
-//         <div>
-//             {!addingTodo ? (
-//                 <div
-//                     className="ui top attached vertical animated button"
-//                     tabIndex="0"
-//                     onClick={() => isAddingTodo(true)}
-//                 >
-//                     <div className="hidden content">Add a todo</div>
-//                     <div className="visible content">
-//                         <i className="plus icon"></i>
-//                     </div>
-//                 </div>
-//             ) : (
-//                 <div className="ui attached segment">
-//                     <span ref={myRef} onClick={handleClickInside}>
-//                         <AddTodo
-//                             isAddingTodo={isAddingTodo}
-//                             handleListUpdate={handleListUpdate}
-//                         />
-//                     </span>
-//                 </div>
-//             )}
-//             <div className="ui attached segment">
-//                 <div>{todos}</div>
-//             </div>
-//         </div>
-//     );
-// }
 
 // FAKE DATA TODOS
 // let todos = todoList.map((todo, index) => (
@@ -211,7 +163,7 @@ History
 //         id: 1,
 //         title: "One todo",
 //         description: "kjdgnkdjngkjndkgnkdfjgkdnkg",
-//         tomatoes: 0,
+//         tomatoes: 1,
 //         timestamp: "1 day ago",
 //         color: "yellow",
 //         userId: 123
@@ -229,9 +181,10 @@ History
 //         id: 3,
 //         title: "Three todo",
 //         description: "dsjkgn skjgn ksjngk nskjbg skbgksbj",
-//         tomatoes: 5,
+//         tomatoes: 3,
 //         timestamp: "5 days ago",
 //         color: "green",
 //         userId: 123
 //     }
 // ];
+// const [todoList, setTodoList] = useState(todosList);

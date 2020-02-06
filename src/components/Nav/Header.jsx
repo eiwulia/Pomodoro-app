@@ -1,31 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/tomatoe.png";
 import Dialog from "../Login/Dialog";
 
 const Header = ({ user, userStateUpdater }) => {
     const [isOpen, setIsOpen] = useState(false);
-    // const [userHeader, setUserHeader] = useState(null);
 
-    // useEffect(() => {
-    //     // local storage
-    //     const userHeader = JSON.parse(localStorage.getItem("user"));
-    //     console.log("header user?, ", userHeader);
-    //     if (userHeader) {
-    //         console.log("user header: ", userHeader);
-    //         setUserHeader(userHeader);
-    //     }
-    // }, []);
-
-    const logIn = e => {
+    const logIn = () => {
         setIsOpen(true);
     };
 
-    const closeDialog = e => {
+    const closeDialog = () => {
         setIsOpen(false);
     };
 
-    const logOut = e => {
+    const logOut = () => {
         console.log("hej log out!");
         localStorage.removeItem("user");
         userStateUpdater(null);
@@ -37,8 +26,7 @@ const Header = ({ user, userStateUpdater }) => {
                 <img className="logo" src={logo} alt="logo" />
                 {"  "}
                 <Link className="item logo-link" to="/home">
-                    {" "}
-                    Pomodoro app
+                    {user ? user.userName : null} Pomodoro app
                 </Link>
             </div>
             <div className="right menu">
