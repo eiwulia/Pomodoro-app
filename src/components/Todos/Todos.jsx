@@ -17,7 +17,43 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
         }, 2000);
     };
 
-    const handleListUpdate = value => setListUpdater(value);
+    const handleListUpdate = (value, action) => {
+        setListUpdater(value);
+        let updatedList;
+        if (action === "delete") {
+            console.log("action is delete");
+            let deletedTodo = todoList.find(todo => todo._id === value._id);
+            updatedList = todoList.filter(todo => todo !== deletedTodo);
+            console.log(
+                "list before: ",
+                todoList,
+                "updated list: ",
+                updatedList,
+                "deleted todo: ",
+                deletedTodo
+            );
+            setTodoList(updatedList);
+        } else if (action === "create") {
+            console.log("action create");
+            updatedList = [...todoList, value];
+            console.log(
+                "list before: ",
+                todoList,
+                "updated list: ",
+                updatedList,
+                "created todo: ",
+                value
+            );
+            setTodoList(updatedList);
+        } else if (action === "update") {
+            console.log("action update");
+            //Find index of specific object using findIndex method.
+            let objIndex = todoList.findIndex(obj => obj.id == value.id);
+            // console.log("Before update: ", todoList[objIndex]);
+            //Update object's name property.
+            todoList[objIndex] = value;
+        }
+    };
 
     useEffect(() => {
         let url = "/api/getAllTodos";

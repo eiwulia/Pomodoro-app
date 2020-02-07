@@ -9,23 +9,16 @@ const AddTodo = ({ handleListUpdate, handleUserMessage, user }) => {
     const [addingTodo, setAddingTodo] = useState(false);
 
     async function AddNewTodo(todo) {
-        let newTodo = {
-            ...todo,
-            timestamp: new Date(),
-            tomatoes: 0
-            // id: uuidv4()
-        };
-        // console.log("new todo will be: ", newTodo);
         const serverResponse = await fetch("/api/postNewTodo", {
             method: "POST",
-            body: JSON.stringify(newTodo),
+            body: JSON.stringify(todo),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
         });
         const res = await serverResponse.json();
         if (res.status === 200) {
-            handleUserMessage("success");
+            // handleUserMessage("success");
         } else {
             console.log("error. Could not add a todo");
             handleUserMessage("failure");
@@ -42,10 +35,12 @@ const AddTodo = ({ handleListUpdate, handleUserMessage, user }) => {
         let todo = {
             title,
             description,
-            color
+            color,
+            tomatoes: 0,
+            timestamp: new Date()
         };
         AddNewTodo(todo);
-        handleListUpdate(todo);
+        handleListUpdate(todo, "create");
     };
 
     const chooseColor = color => {

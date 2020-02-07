@@ -27,12 +27,12 @@ const EditTodoModal = ({
                 "Content-type": "application/json; charset=UTF-8"
             }
         })
-            .then(res => {
-                res.json();
-                if (res.status === 200) {
-                    handleUserMessage("success");
-                }
-            })
+            // .then(res => {
+            //     res.json();
+            //     if (res.status === 200) {
+            //         handleUserMessage("success");
+            //     }
+            // })
             .then(
                 res => {
                     console.log("todo updated!", "with todo: ", newTodoInfo);
@@ -55,7 +55,7 @@ const EditTodoModal = ({
         };
         UpdateTodo(todo);
         handleEditClick(false);
-        handleListUpdate(newTodoInfo);
+        handleListUpdate(newTodoInfo, "update");
     };
 
     const pickNewColor = col => {

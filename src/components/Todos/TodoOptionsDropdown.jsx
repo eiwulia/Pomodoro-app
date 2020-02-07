@@ -8,20 +8,20 @@ const TodoOptionsDropdown = ({
     handleUserMessage
 }) => {
     const DeleteTodo = todoId => {
+        handleListUpdate(todo, "delete");
         fetch(`/api/deleteTodo/${todoId}`, {
             method: "DELETE",
             body: JSON.stringify(todoId)
         })
             .then(res => {
                 res.json();
-                if (res.status === 200) {
-                    handleUserMessage("success");
-                }
+                // if (res.status === 200) {
+                //     handleUserMessage("success");
+                // }
             })
             .then(
                 result => {
-                    console.log("todo deleted!", result);
-                    handleListUpdate(todo);
+                    console.log("todo deleted!", todo);
                 },
                 error => {
                     console.log("Error while deleting todo: ", error);
