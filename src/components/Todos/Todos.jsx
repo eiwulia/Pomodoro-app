@@ -5,10 +5,16 @@ import Loader from "../Loader";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import UserMessage from "./UserMessage";
 
-const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
+const Todos = ({
+    user,
+    handleSelectedTodo,
+    tomatoePoints,
+    tomatoeTodoId,
+    handleTotalTomatoePoints
+}) => {
     const [todoList, setTodoList] = useState([]);
-    const [listUpdater, setListUpdater] = useState({});
     const [status, setStatus] = useState(null);
+    const [todoUpdater, setTodoUpdater] = useState({});
 
     const handleUserMessage = status => {
         setStatus(status);
@@ -18,83 +24,52 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
     };
 
     const handleListUpdate = (value, action) => {
-        setListUpdater(value);
+        setTodoUpdater(value);
         let updatedList;
         if (action === "delete") {
-            console.log("action is delete");
+            console.log("action delete");
             let deletedTodo = todoList.find(todo => todo._id === value._id);
             updatedList = todoList.filter(todo => todo !== deletedTodo);
-            console.log(
-                "list before: ",
-                todoList,
-                "updated list: ",
-                updatedList,
-                "deleted todo: ",
-                deletedTodo
-            );
             setTodoList(updatedList);
         } else if (action === "create") {
             console.log("action create");
             updatedList = [...todoList, value];
-            console.log(
-                "list before: ",
-                todoList,
-                "updated list: ",
-                updatedList,
-                "created todo: ",
-                value
-            );
             setTodoList(updatedList);
         } else if (action === "update") {
             console.log("action update");
-            //Find index of specific object using findIndex method.
-            let objIndex = todoList.findIndex(obj => obj.id == value.id);
-            // console.log("Before update: ", todoList[objIndex]);
-            //Update object's name property.
+            let objIndex = todoList.findIndex(obj => obj.id === value.id);
+            todoList[objIndex] = value;
+        } else if (action === "tomatoes") {
+            console.log("action tomatoes");
+            let objIndex = todoList.findIndex(obj => obj.id === value.id);
             todoList[objIndex] = value;
         }
     };
 
-    useEffect(() => {
-        let url = "/api/getAllTodos";
-        fetch(url, { method: "GET" })
-            .then(response => response.json())
-            .then(json => {
-                setTodoList(json.body);
-            })
-            .catch(error => {
-                console.error(
-                    "Something went wrong when trying to get all todos",
-                    error.message
-                );
-            });
-    }, [listUpdater]);
-
     let todos;
-    todos = todoList.map((todo, index) => (
-        <Todo
-            key={index}
-            handleListUpdate={handleListUpdate}
-            todo={todo}
-            index={index}
-            user={user}
-            handleUserMessage={handleUserMessage}
-            handleSelectedTodo={handleSelectedTodo}
-            tomatoePoints={tomatoePoints}
-            tomatoeTodoId={tomatoeTodoId}
-        />
-    ));
+    if (todoList) {
+        todos = todoList.map((todo, index) => (
+            <Todo
+                key={index}
+                handleListUpdate={handleListUpdate}
+                todo={todo}
+                index={index}
+                user={user}
+                handleUserMessage={handleUserMessage}
+                handleSelectedTodo={handleSelectedTodo}
+                tomatoePoints={tomatoePoints}
+                tomatoeTodoId={tomatoeTodoId}
+            />
+        ));
+    }
 
     const onDragEnd = result => {
         console.log("drag end event");
         const { destination, source, draggableId } = result;
-
         //check if todo has been dropped outside of the container
-        //!result.destination
         if (!destination) {
             return;
         }
-
         //check if location is the same
         if (
             destination.draggableId === source.draggableId &&
@@ -102,22 +77,46 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
         ) {
             return;
         }
-
         //reorder todos
         let list = Array.from(todoList);
         const [removed] = list.splice(source.index, 1);
         list.splice(destination.index, 0, removed);
 
         console.log("list is: ", list);
-
         setTodoList(list);
     };
 
-    const saveOrderToDb = () => {
-        console.log("save order to db");
+    const UpdateTodoOrder = (user, list) => {
+        fetch(`/api/updateTodoOrder/${user.userId}`, {
+            method: "PUT",
+            body: JSON.stringify(list),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        }).then(
+            res => {
+                console.log(
+                    "order updated! ",
+                    list,
+                    "Res.status: ",
+                    res.status
+                );
+            },
+            error => {
+                console.log("Error while updating todo order: ", error);
+                handleUserMessage("failure");
+            }
+        );
     };
 
-    let todosContent;
+    const saveTodoOrderToDb = () => {
+        console.log("save order to db");
+        if (user && todoList) {
+            UpdateTodoOrder(user, todoList);
+        }
+    };
+
+    let todosContent = "";
     if (!user) {
         todosContent = (
             <div className="todo-centered-content">
@@ -125,7 +124,7 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
                 <p>Log in now to start using pomodoro app!</p>
             </div>
         );
-    } else if (user && !todos) {
+    } else if (user && todos.length === 0) {
         todosContent = (
             <div className="todo-centered-content">
                 <h3>Hi {user.userName}!</h3>
@@ -135,9 +134,34 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
                 </p>
             </div>
         );
-    } else if (user && todos) {
+    } else if (user && todos.length !== 0) {
         todosContent = todos;
     }
+
+    const GetUserTodos = userFromLocalStorage => {
+        let url = `/api/getUser/${userFromLocalStorage.userId}`;
+        fetch(url, {
+            method: "GET"
+        })
+            .then(response => response.json())
+            .then(json => {
+                console.log("User todos (db): ", json.body.todos);
+                setTodoList(json.body.todos);
+                handleTotalTomatoePoints(json.body.totalTomatoes);
+            })
+            .catch(error => {
+                console.error(
+                    "Something went wrong when trying to get user",
+                    error.message
+                );
+            });
+    };
+
+    useEffect(() => {
+        if (user) {
+            GetUserTodos(user);
+        }
+    }, [user]);
 
     return (
         <div className="my-container">
@@ -153,9 +177,7 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
                         user={user}
                     />
                     <div className="ui attached segment">
-                        {!todos || todos.length === 0 ? (
-                            <Loader></Loader>
-                        ) : null}
+                        {todosContent.length === 0 ? <Loader></Loader> : null}
                         <DragDropContext onDragEnd={onDragEnd}>
                             <Droppable droppableId="droppable">
                                 {provided => (
@@ -163,21 +185,19 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}
                                     >
-                                        {/* {todos} */}
                                         {todosContent}
                                         {provided.placeholder}
                                     </div>
                                 )}
                             </Droppable>
                         </DragDropContext>
-                        {/* )} */}
                     </div>
                     <div
                         className={`ui bottom attached button ${
                             user ? "" : "disabled"
                         }`}
                         tabIndex="0"
-                        onClick={saveOrderToDb}
+                        onClick={saveTodoOrderToDb}
                     >
                         Save todo order
                     </div>
@@ -188,39 +208,3 @@ const Todos = ({ user, handleSelectedTodo, tomatoePoints, tomatoeTodoId }) => {
 };
 
 export default Todos;
-
-// FAKE DATA TODOS
-// let todos = todoList.map((todo, index) => (
-//     <Todo key={index} todo={todo} index={index} user={user} />
-// ));
-
-// const todosList = [
-//     {
-//         id: 1,
-//         title: "One todo",
-//         description: "kjdgnkdjngkjndkgnkdfjgkdnkg",
-//         tomatoes: 1,
-//         timestamp: "1 day ago",
-//         color: "yellow",
-//         userId: 123
-//     },
-//     {
-//         id: 2,
-//         title: "Two todo",
-//         description: "sdkjns skng ksjdng kjsndgk jnsdkgn ",
-//         tomatoes: 2,
-//         timestamp: "2 days ago",
-//         color: "pink",
-//         userId: 123
-//     },
-//     {
-//         id: 3,
-//         title: "Three todo",
-//         description: "dsjkgn skjgn ksjngk nskjbg skbgksbj",
-//         tomatoes: 3,
-//         timestamp: "5 days ago",
-//         color: "green",
-//         userId: 123
-//     }
-// ];
-// const [todoList, setTodoList] = useState(todosList);

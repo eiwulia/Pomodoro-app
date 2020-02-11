@@ -3,31 +3,34 @@ import { Dropdown } from "semantic-ui-react";
 
 const TodoOptionsDropdown = ({
     todo,
+    user,
     handleListUpdate,
     handleEditClick,
     handleUserMessage
 }) => {
-    const DeleteTodo = todoId => {
+    const DeleteTodo = (user, todo) => {
+        fetch(`/api/deleteTodoFromList/${user.userId}`, {
+            method: "PUT",
+            body: JSON.stringify(todo),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        }).then(
+            res => {
+                console.log("todo deleted!", todo, "Res.status: ", res.status);
+            },
+            error => {
+                console.log("Error while deleting todo: ", error);
+                handleUserMessage("failure");
+            }
+        );
+    };
+
+    const handleDeleteClick = todo => {
         handleListUpdate(todo, "delete");
-        fetch(`/api/deleteTodo/${todoId}`, {
-            method: "DELETE",
-            body: JSON.stringify(todoId)
-        })
-            .then(res => {
-                res.json();
-                // if (res.status === 200) {
-                //     handleUserMessage("success");
-                // }
-            })
-            .then(
-                result => {
-                    console.log("todo deleted!", todo);
-                },
-                error => {
-                    console.log("Error while deleting todo: ", error);
-                    handleUserMessage("failure");
-                }
-            );
+        if (user) {
+            DeleteTodo(user, todo);
+        }
     };
 
     return (
@@ -41,7 +44,7 @@ const TodoOptionsDropdown = ({
                 <Dropdown.Item onClick={() => handleEditClick(true)}>
                     Edit
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => DeleteTodo(todo._id)}>
+                <Dropdown.Item onClick={() => handleDeleteClick(todo)}>
                     Delete
                 </Dropdown.Item>
             </Dropdown.Menu>

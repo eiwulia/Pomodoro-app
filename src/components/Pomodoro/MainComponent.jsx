@@ -48,12 +48,6 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
     }, [selectedTodo]);
 
     useEffect(() => {
-        if (selectedTodo) {
-            handleTomatoesPoints(selectedTodo._id, count);
-        }
-    }, [selectedTodo, count]);
-
-    useEffect(() => {
         const calculatePercentage = () => {
             const initTime = countDownTime * 60;
             const pct = ((initTime - secondsLeft) / initTime) * 100;
@@ -66,7 +60,6 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                 setSecondsLeft(secondsLeft - 1);
                 setTimeLeft(formatSeconds(secondsLeft));
                 setPercentage(calculatePercentage());
-                console.log("count: ", count);
 
                 if (secondsLeft === 0) {
                     console.log("ding ding dong!", count);
@@ -84,18 +77,16 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                     setPercentage(calculatePercentage());
 
                     if (workCycle === "break") {
-                        setCount(count + 1);
+                        let points = count + 1;
+                        setCount(points);
+                        handleTomatoesPoints(selectedTodo.id, points);
                     }
                 }
 
                 if (cycle === "work" && secondsLeft === 1) {
-                    // const audio = new Audio(
-                    //     "http://soundbible.com/grab.php?id=2103&type=wav"
-                    // );
                     const audio = new Audio(
                         " http://soundbible.com/grab.php?id=2190&type=mp3"
                     );
-
                     audio.play();
                 }
             }, 1000);
@@ -138,8 +129,6 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                     {selectedTodo ? (
                         <span>
                             <p>{selectedTodo.description}</p>
-                            <p>{selectedTodo.tomatoes}</p>
-                            <p>count: {count}</p>
                         </span>
                     ) : (
                         <p>Double click on a task to select it</p>
@@ -173,109 +162,3 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
 };
 
 export default MainComponent;
-
-//   this.state = {
-//     workMinutes: this.props.workMinutes,
-//     workColor: this.props.workColor,
-//     breakMinutes: this.props.breakMinutes,
-//     breakColor: this.props.breakColor,
-//     countDownTime: this.props.workMinutes,
-//     secondsLeft: this.props.countDownTime * 60,
-//     timeLeft: this.formatSeconds(this.props.workMinutes * 60),
-//     percentage: 0,
-//     hasRun: false,
-//     cycle: 'work',
-//     progressColor: this.props.workColor
-//   };
-
-// const handleInputChange = (id, countDownTime) => {
-//     console.log(`App hasRun: ${hasRun}`);
-//     const workUpdate = id === "work" ? countDownTime : workMinutes;
-//     const breakUpdate = id === "break" ? countDownTime : breakMinutes;
-//     console.log(`workUpdate: ${workUpdate}, breakUpdate: ${breakUpdate}`);
-//     if (hasRun === false) {
-//         setWorkMinutes(workUpdate);
-//         setBreakMinutes(breakUpdate);
-//         setCountDownTime(workUpdate);
-//         setSecondsLeft(workUpdate * 60);
-//         setTimeLeft(formatSeconds(workUpdate * 60));
-//         setPercentage(0);
-//     } else {
-//         console.log(
-//             `App now running, handle id ${id} input change: ${countDownTime}`
-//         );
-//         setWorkMinutes(workUpdate);
-//         setBreakMinutes(breakUpdate);
-//     }
-// };
-
-// const handleStartClick = () => {
-//     console.log(`Handling startClick`);
-//     const countDownTime = cycle === "work" ? workMinutes : breakMinutes;
-//     const secondsLeft = countDownTime * 60;
-//     setSecondsLeft(secondsLeft);
-//     setCountDownTime(countDownTime);
-
-//     let incrementer = setInterval(() => {
-//         setSecondsLeft(secondsLeft - 1);
-//         setTimeLeft(formatSeconds(secondsLeft));
-//         setPercentage(calculatePercentage());
-
-//         if (secondsLeft === -1) {
-//             const workCycle = cycle === "work" ? "break" : "work";
-//             const countDownTime =
-//                 cycle === "work" ? workMinutes : breakMinutes;
-//             const progressColor = cycle === "work" ? workColor : breakColor;
-//             const secondsLeft = countDownTime * 60;
-
-//             // const audio = new Audio(' http://soundbible.com/grab.php?id=2148&type=mp3');
-//             // audio.play();
-//             setCycle(workCycle);
-//             setSecondsLeft(secondsLeft);
-//             setCountDownTime(countDownTime);
-//             setProgressColor(progressColor);
-//             setTimeLeft(formatSeconds(secondsLeft));
-//             setPercentage(calculatePercentage());
-//         }
-//         console.log(
-//             `countDownTime: ${countDownTime}, secondsLeft: ${secondsLeft}, cycle: ${cycle}, timeLeft: ${timeLeft}`
-//         );
-//         /*
-//     }, () => {
-//       //clearInterval(incrementer);
-//     });
-//     */
-//     }, 1000);
-//     setHasRun(true);
-//     setIncrementer(incrementer);
-// };
-
-// const defaults = {
-//     workMinutes: 25,
-//     workColor: "red",
-//     breakMinutes: 5,
-//     breakColor: "yellow"
-// };
-
-/* <div>
-    <div>
-        <Timer
-            key="break"
-            name="Break Time (min)"
-            color={breakColor}
-            time={breakMinutes}
-            // id="break"
-            // handleInputChange={handleInputChange}
-        />
-    </div>
-    <div>
-        <Timer
-            key="work"
-            name="Work Time (min)"
-            color={workColor}
-            time={workMinutes}
-            // id="work"
-            // handleInputChange={handleInputChange}
-        />
-    </div>
-</div>; */

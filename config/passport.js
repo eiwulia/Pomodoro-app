@@ -22,7 +22,9 @@ passport.use(
                 email: profile.emails[0].value,
                 googleId: profile.id,
                 photo: profile.photos[0].value,
-                token: accessToken
+                token: accessToken,
+                todos: [],
+                totalTomatoes: 0
             };
             console.log("user data: ", userData);
             db.addUser(userData, result => {

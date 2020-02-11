@@ -19,19 +19,51 @@ const Todo = ({
     const [isEditing, setIsEditing] = useState(false);
     const [tomatoes, setTomatoes] = useState(todo.tomatoes);
 
+    const UpdateTomatoePoints = (user, todo, points) => {
+        let todoUpdater = {
+            todo: { todo },
+            tomatoePoints: points
+        };
+        fetch(`/api/updateTodoTomatoePoints/${user.userId}`, {
+            method: "PUT",
+            body: JSON.stringify(todoUpdater),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        }).then(
+            res => {
+                console.log("Update todo tomatoe points: ", res.status);
+            },
+            error => {
+                console.log("Error while updating todo tomatoes: ", error);
+                handleUserMessage("failure");
+            }
+        );
+    };
+
     useEffect(() => {
-        if (todo._id === tomatoeTodoId && tomatoePoints) {
+        if (todo.id === tomatoeTodoId && tomatoePoints) {
             setTomatoes(tomatoePoints);
+            let newTodoInfo = {
+                id: todo.id,
+                title: todo.title,
+                description: todo.description,
+                color: todo.color,
+                tomatoes: tomatoePoints,
+                timestamp: todo.timestamp
+            };
+            handleListUpdate(newTodoInfo, "tomatoes");
+            if (user) {
+                UpdateTomatoePoints(user, todo, tomatoePoints);
+            }
         }
-    }, [tomatoePoints, todo._id, tomatoeTodoId]);
+    }, [tomatoePoints, todo.id, tomatoeTodoId]);
 
     const handleEditClick = bool => setIsEditing(bool);
 
     let todoTime = "2020-01-17T16:42:13.240Z";
-
-    const daysAgo = todoTimestamp => {
+    const daysAgo = () => {
         let start = moment(todo.timestamp);
-        // let start = moment(todoTimestamp);
         let end = moment(new Date());
         let momentDayDiference = end.to(start); // ".. days ago"
 
@@ -45,7 +77,7 @@ const Todo = ({
 
     return (
         <div onDoubleClick={e => handleDoubleClick(e)}>
-            <Draggable draggableId={`${todo._id}`} index={index} key={todo._id}>
+            <Draggable draggableId={`${todo.id}`} index={index} key={todo.id}>
                 {(provided, snapshot) => (
                     <div
                         className="ui cards"
@@ -57,6 +89,7 @@ const Todo = ({
                             <div className="content">
                                 <TodoOptionsDropdown
                                     todo={todo}
+                                    user={user}
                                     handleListUpdate={handleListUpdate}
                                     handleEditClick={handleEditClick}
                                     handleUserMessage={handleUserMessage}
@@ -64,6 +97,7 @@ const Todo = ({
                                 {isEditing ? (
                                     <EditTodoModal
                                         todo={todo}
+                                        user={user}
                                         handleEditClick={handleEditClick}
                                         handleListUpdate={handleListUpdate}
                                         handleUserMessage={handleUserMessage}
@@ -81,7 +115,7 @@ const Todo = ({
                             </div>
                             <div className="extra content">
                                 <i className="tomatoe-icon icon"></i>
-                                {tomatoes} tomatoes
+                                {todo.tomatoes} tomatoes
                             </div>
                         </div>
                     </div>

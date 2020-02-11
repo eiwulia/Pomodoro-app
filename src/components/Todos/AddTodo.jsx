@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ColorDropdown from "./ColorDropdown";
-// const uuidv4 = require("uuid/v4");
+const uuidv4 = require("uuid/v4");
 
 const AddTodo = ({ handleListUpdate, handleUserMessage, user }) => {
     const [title, setTitle] = useState("");
@@ -8,23 +8,26 @@ const AddTodo = ({ handleListUpdate, handleUserMessage, user }) => {
     const [color, setColor] = useState("pink");
     const [addingTodo, setAddingTodo] = useState(false);
 
-    async function AddNewTodo(todo) {
-        const serverResponse = await fetch("/api/postNewTodo", {
-            method: "POST",
+    const addTodoToList = (user, todo) => {
+        fetch(`/api/addTodoToList/${user.userId}`, {
+            method: "PUT",
             body: JSON.stringify(todo),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
-        });
-        const res = await serverResponse.json();
-        if (res.status === 200) {
-            // handleUserMessage("success");
-        } else {
-            console.log("error. Could not add a todo");
-            handleUserMessage("failure");
-        }
-        console.log("Todo created successfuly! Response status: ", res.status);
-    }
+        }).then(
+            res => {
+                console.log("Added todo! ", todo, "Res.status: ", res.status);
+            },
+            error => {
+                console.log(
+                    "Error while adding todo to user todos list: ",
+                    error
+                );
+                handleUserMessage("failure");
+            }
+        );
+    };
 
     const handleSubmit = e => {
         isAddingTodo(false);
@@ -33,14 +36,17 @@ const AddTodo = ({ handleListUpdate, handleUserMessage, user }) => {
             `title: ${title}, description: ${description}, color: ${color}`
         );
         let todo = {
+            id: uuidv4(),
             title,
             description,
             color,
             tomatoes: 0,
             timestamp: new Date()
         };
-        AddNewTodo(todo);
         handleListUpdate(todo, "create");
+        if (user) {
+            addTodoToList(user, todo);
+        }
     };
 
     const chooseColor = color => {

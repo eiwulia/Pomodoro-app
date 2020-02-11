@@ -6,56 +6,57 @@ const EditTodoModal = ({
     todo,
     handleEditClick,
     handleListUpdate,
-    handleUserMessage
+    handleUserMessage,
+    user
 }) => {
     const [newTitle, setNewTitle] = useState(todo.title);
     const [newDescription, setNewDescription] = useState(todo.description);
     const [newColor, setNewColor] = useState("green");
 
-    const UpdateTodo = todo => {
+    const UpdateTodoInList = (user, todo) => {
         let newTodoInfo = {
-            id: todo._id,
+            id: todo.id,
             title: newTitle,
             description: newDescription,
-            color: newColor
+            color: newColor,
+            tomatoes: todo.tomatoes,
+            timestamp: todo.timestamp
         };
-        // console.log(newTodoInfo, "without server involved");
-        fetch(`/api/updateTodo/${todo._id}`, {
+        fetch(`/api/updateTodoInList/${user.userId}`, {
             method: "PUT",
             body: JSON.stringify(newTodoInfo),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
-        })
-            // .then(res => {
-            //     res.json();
-            //     if (res.status === 200) {
-            //         handleUserMessage("success");
-            //     }
-            // })
-            .then(
-                res => {
-                    console.log("todo updated!", "with todo: ", newTodoInfo);
-                    // handleListUpdate(newTodoInfo);
-                },
-                error => {
-                    console.log("Error while updating todo: ", error);
-                    handleUserMessage("failure");
-                }
-            );
+        }).then(
+            res => {
+                console.log(
+                    "todo updated! Updated todo: ",
+                    newTodoInfo,
+                    "Res.status: ",
+                    res.status
+                );
+            },
+            error => {
+                console.log("Error while updating todo: ", error);
+                handleUserMessage("failure");
+            }
+        );
     };
 
     const handleUpdateSubmit = e => {
         e.preventDefault();
         let newTodoInfo = {
-            id: todo._id,
+            id: todo.id,
             title: newTitle,
             description: newDescription,
             color: newColor
         };
-        UpdateTodo(todo);
         handleEditClick(false);
         handleListUpdate(newTodoInfo, "update");
+        if (user && todo) {
+            UpdateTodoInList(user, todo);
+        }
     };
 
     const pickNewColor = col => {
