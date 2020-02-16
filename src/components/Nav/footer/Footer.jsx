@@ -13,9 +13,12 @@ const Footer = () => {
                         alt="logo"
                     />
                     <div className="ui horizontal inverted small divided link list">
-                        <Link className="item" to="/contact">
+                        <a href="mailto:ievalundin@gmail.com" className="item">
                             Contact Me
-                        </Link>
+                        </a>
+                        {/* <Link className="item" to="/contact">
+                            Contact Me
+                        </Link> */}
                         <Link className="item" to="/terms-and-conditions">
                             Terms and Conditions
                         </Link>

@@ -76,19 +76,20 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                     setTimeLeft(formatSeconds(secondsLeft));
                     setPercentage(calculatePercentage());
 
-                    if (workCycle === "break") {
+                    if (workCycle === "break" && selectedTodo) {
                         let points = count + 1;
                         setCount(points);
                         handleTomatoesPoints(selectedTodo.id, points);
                     }
                 }
 
-                if (cycle === "work" && secondsLeft === 1) {
-                    const audio = new Audio(
-                        " http://soundbible.com/grab.php?id=2190&type=mp3"
-                    );
-                    audio.play();
-                }
+                // if (cycle === "work" && secondsLeft === 1) {
+
+                //     const audio = new Audio(
+                //         "http://soundbible.com/grab.php?id=2190&type=mp3"
+                //     );
+                //     audio.play();
+                // }
             }, 1000);
         } else if (!isActive && secondsLeft !== 0) {
             clearInterval(interval);
@@ -120,7 +121,7 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                     />
                 </div>
 
-                <div className="content-container">
+                <div className="content-container content-info">
                     {selectedTodo ? (
                         <h1>{selectedTodo.title}</h1>
                     ) : (
@@ -141,20 +142,26 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                     >
                         {timeLeft}
                     </h1>
-
-                    <button
-                        className="ui red button"
-                        onClick={handleStartClick}
-                    >
-                        <i
-                            className={`${isActive ? "pause" : "play"} icon`}
-                        ></i>
-                        {isActive ? "Pause" : "Play"}
-                    </button>
-                    <button className="ui button" onClick={handleResetClick}>
-                        <i className="sync alternate icon"></i>
-                        Reset
-                    </button>
+                    <span className="circle-buttons">
+                        <button
+                            className="ui red button"
+                            onClick={handleStartClick}
+                        >
+                            <i
+                                className={`${
+                                    isActive ? "pause" : "play"
+                                } icon`}
+                            ></i>
+                            {isActive ? "Pause" : "Play"}
+                        </button>
+                        <button
+                            className="ui button"
+                            onClick={handleResetClick}
+                        >
+                            <i className="sync alternate icon"></i>
+                            Reset
+                        </button>
+                    </span>
                 </div>
             </div>
         </div>

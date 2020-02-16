@@ -5,7 +5,7 @@ import Home from "./Home";
 import Contact from "../components/Nav/footer/Contact";
 import FooterInfo from "../components/Nav/footer/FooterInfo";
 
-const ContentRouting = ({ user }) => {
+const ContentRouting = ({ user, totalTomPoints }) => {
     const [routes] = useState([
         { exact: true, path: "/", component: Home },
         { exact: false, path: "/login", component: Home },
@@ -22,7 +22,11 @@ const ContentRouting = ({ user }) => {
             exact={route.exact}
             path={route.path}
             render={({ match }) => (
-                <route.component match={match} user={user} />
+                <route.component
+                    match={match}
+                    user={user}
+                    totalTomPoints={totalTomPoints}
+                />
             )}
         />
     ));

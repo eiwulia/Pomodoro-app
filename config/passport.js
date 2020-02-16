@@ -26,9 +26,7 @@ passport.use(
                 todos: [],
                 totalTomatoes: 0
             };
-            console.log("user data: ", userData);
             db.addUser(userData, result => {
-                console.log("Add user to db");
                 // return new user
                 return done(null, userData);
             });

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Todos from "./Todos/Todos";
 import MainComponent from "./Pomodoro/MainComponent";
 
-const Home = ({ user }) => {
+const Home = ({ user, totalTomPoints }) => {
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [tomatoePoints, setTomatoePoints] = useState(0);
     const [tomatoeTodoId, setTomatoeTodoId] = useState(null);
@@ -38,6 +38,7 @@ const Home = ({ user }) => {
         let points = Number(totalTomatoes) + 1;
         if (user) {
             UpdateTotalTomatoePoints(user, points);
+            totalTomPoints(points);
         }
     };
 
@@ -54,7 +55,11 @@ const Home = ({ user }) => {
                 tomatoePoints={tomatoePoints}
                 tomatoeTodoId={tomatoeTodoId}
                 handleTotalTomatoePoints={handleTotalTomatoePoints}
+                totalTomPoints={totalTomPoints}
             ></Todos>
+            <h4 className="ui horizontal divider header pomodoro-divider">
+                <i className="tomatoe-icon icon"></i>
+            </h4>
             <MainComponent
                 user={user}
                 selectedTodo={selectedTodo}

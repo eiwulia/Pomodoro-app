@@ -10,7 +10,8 @@ const Todos = ({
     handleSelectedTodo,
     tomatoePoints,
     tomatoeTodoId,
-    handleTotalTomatoePoints
+    handleTotalTomatoePoints,
+    totalTomPoints
 }) => {
     const [todoList, setTodoList] = useState([]);
     const [status, setStatus] = useState(null);
@@ -148,6 +149,7 @@ const Todos = ({
                 console.log("User todos (db): ", json.body.todos);
                 setTodoList(json.body.todos);
                 handleTotalTomatoePoints(json.body.totalTomatoes);
+                totalTomPoints(json.body.totalTomatoes);
             })
             .catch(error => {
                 console.error(
@@ -163,8 +165,12 @@ const Todos = ({
         }
     }, [user]);
 
+    // const getListStyle = isDraggingOver => ({
+    //     background: isDraggingOver ? "lightblue" : ""
+    // });
+
     return (
-        <div className="my-container">
+        <div className="my-container todo-container">
             <div className="ui top attached tabular menu">
                 <span className={`item active`}>To Do's</span>
             </div>
@@ -180,10 +186,13 @@ const Todos = ({
                         {todosContent.length === 0 ? <Loader></Loader> : null}
                         <DragDropContext onDragEnd={onDragEnd}>
                             <Droppable droppableId="droppable">
-                                {provided => (
+                                {(provided, snapshot) => (
                                     <div
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}
+                                        // style={getListStyle(
+                                        //     snapshot.isDraggingOver
+                                        // )}
                                     >
                                         {todosContent}
                                         {provided.placeholder}

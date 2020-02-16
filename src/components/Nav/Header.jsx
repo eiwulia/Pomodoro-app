@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/tomatoe.png";
 import Dialog from "../Login/Dialog";
 
-const Header = ({ user, userStateUpdater }) => {
+const Header = ({ user, userStateUpdater, tomPoints }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const logIn = () => {
@@ -15,21 +15,31 @@ const Header = ({ user, userStateUpdater }) => {
     };
 
     const logOut = () => {
-        console.log("hej log out!");
         localStorage.removeItem("user");
         userStateUpdater(null);
     };
 
     return (
-        <div className="ui secondary  menu">
-            <div className="header item">
+        <div className="ui secondary menu">
+            <span className="item">
                 <img className="logo" src={logo} alt="logo" />
-                {"  "}
-                <Link className="item logo-link" to="/home">
-                    {user ? user.userName : null} Pomodoro app
+                <Link className="item logo-link user-name-logo" to="/home">
+                    <span className="user-name-logo">
+                        {user ? user.userName : null}
+                        &nbsp;&nbsp; Pomodoro app
+                    </span>
                 </Link>
-            </div>
+            </span>
+
             <div className="right menu">
+                <div className="ui labeled button item">
+                    <div className="ui black button">
+                        Total &nbsp;&nbsp;&nbsp;&nbsp;
+                        <i className="tomatoe-icon icon"></i>
+                    </div>
+                    <a className="ui basic black label item">{tomPoints}</a>
+                </div>
+
                 <Link className="ui item" to="/home">
                     Home
                 </Link>

@@ -1,12 +1,6 @@
 import React from "react";
 
-const CircularProgressBar = ({
-    percentage,
-    timeLeft,
-    sqSize,
-    color,
-    strokeWidth
-}) => {
+const CircularProgressBar = ({ percentage, sqSize, color, strokeWidth }) => {
     // Size of the enclosing square
     // const sqSize = sqSize;
     // SVG centers the stroke width on the radius, subtract out so circle fits in square
@@ -41,18 +35,6 @@ const CircularProgressBar = ({
                     stroke: color
                 }}
             />
-            {/* <text
-                className="circle-text"
-                x="50%"
-                y="50%"
-                dy=".3em"
-                textAnchor="middle"
-                style={{
-                    fill: color
-                }}
-            >
-                {`${timeLeft}`}
-            </text> */}
         </svg>
     );
 };

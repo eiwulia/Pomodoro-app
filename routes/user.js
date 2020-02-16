@@ -2,17 +2,12 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-// // auth logout
-// router.get('/logout', (req, res) => {
-//     // handle with passport
-//     res.send('logging out');
-// });
-
 /* GET Google Authentication API. */
 router.get(
     "/google",
     passport.authenticate("google", { scope: ["profile", "email"] })
 );
+
 router.get(
     "/google/callback",
     passport.authenticate("google", { failureRedirect: "/", session: false }),
@@ -35,5 +30,10 @@ router.get(
         );
     }
 );
+
+router.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/");
+});
 
 module.exports = router;

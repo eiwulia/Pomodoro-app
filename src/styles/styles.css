@@ -18,26 +18,24 @@ main {
 
 .wrapper {
     display: flex;
-    /* margin: 0 auto; */
     width: 100%;
     min-height: 600px;
-    /* justify-content: center;
-    flex-wrap: wrap; */
 }
 
 .my-container {
-    /* justify-content: space-around; */
     flex: 1;
     margin: 10px;
 }
 
-/* .container > div {
-    flex: 1 1 auto;
-} */
-
 footer {
     margin-top: auto;
     padding-top: 20px;
+}
+
+.pomodoro-divider,
+.pomodoro-divider > tomatoe-icon,
+.ui.header .icon:only-child {
+    display: none;
 }
 
 @import "./components/login.css";
@@ -46,3 +44,75 @@ footer {
 @import "./components/todos.css";
 @import "./components/pomodoro.css";
 @import "./components/loader.css";
+
+@media screen and (max-width: 1040px) {
+    .wrapper {
+        flex-flow: column;
+    }
+    .wrapper .my-container {
+        display: inline-block;
+    }
+    .todo-container {
+        order: 3;
+    }
+    .pomodoro-container {
+        order: 1;
+    }
+    .pomodoro-divider,
+    .ui.header .icon:only-child {
+        order: 2;
+        display: inline-block;
+        margin-right: 0px !important;
+    }
+    .user-name-logo,
+    #root > div > div > span > a {
+        display: none;
+    }
+
+    /* POMODORO TIMER */
+    .pomodoro-container {
+        position: relative;
+    }
+
+    .pomodoro-inner-container {
+        position: relative;
+        right: 0;
+    }
+
+    .pomodoro-inner-container > .content-container {
+        position: relative;
+        transform: none;
+    }
+
+    .content-info {
+        min-height: 50px;
+    }
+
+    .content-info > .circle-text,
+    .content-info > .circle-buttons {
+        /* position: relative;
+        top: -21rem; */
+
+        position: absolute;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: -16rem;
+        width: 100%;
+    }
+
+    .content-info > .circle-buttons {
+        top: -9rem;
+    }
+
+    .content-container > svg {
+        background-color: white;
+        border-radius: 50%;
+        width: 300px;
+        height: 300px;
+        margin-bottom: 2rem;
+    }
+
+    .wrapper {
+        min-height: 5rem;
+    }
+}

@@ -62,10 +62,11 @@ const Todo = ({
     const handleEditClick = bool => setIsEditing(bool);
 
     let todoTime = "2020-01-17T16:42:13.240Z";
+
     const daysAgo = () => {
         let start = moment(todo.timestamp);
         let end = moment(new Date());
-        let momentDayDiference = end.to(start); // ".. days ago"
+        let momentDayDiference = end.to(start);
 
         return momentDayDiference;
     };
@@ -74,6 +75,11 @@ const Todo = ({
         console.log("double click", todo);
         handleSelectedTodo(todo);
     };
+
+    // const getItemStyle = (isDragging, draggableStyle) => ({
+    //     background: isDragging ? "lightgreen" : "",
+    //     ...draggableStyle
+    // });
 
     return (
         <div onDoubleClick={e => handleDoubleClick(e)}>
@@ -84,6 +90,10 @@ const Todo = ({
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
+                        // style={getItemStyle(
+                        //     snapshot.isDragging,
+                        //     provided.draggableProps.style
+                        // )}
                     >
                         <div className={`card ${todo.color}`}>
                             <div className="content">
