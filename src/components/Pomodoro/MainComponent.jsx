@@ -25,12 +25,10 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
     const [count, setCount] = useState(0);
 
     const handleStartClick = () => {
-        console.log("start-pause handler");
         setIsActive(!isActive);
     };
 
     const handleResetClick = () => {
-        console.log(`Handling reset`);
         setIsActive(false);
         setCycle("work");
         setCountDownTime(workMinutes);
@@ -62,7 +60,6 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                 setPercentage(calculatePercentage());
 
                 if (secondsLeft === 0) {
-                    console.log("ding ding dong!", count);
                     const workCycle = cycle === "work" ? "break" : "work";
                     const countDownTime =
                         workCycle === "work" ? workMinutes : breakMinutes;
@@ -83,13 +80,12 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
                     }
                 }
 
-                // if (cycle === "work" && secondsLeft === 1) {
-
-                //     const audio = new Audio(
-                //         "http://soundbible.com/grab.php?id=2190&type=mp3"
-                //     );
-                //     audio.play();
-                // }
+                if (cycle === "work" && secondsLeft === 1) {
+                    const audio = new Audio(
+                        "http://soundbible.com/grab.php?id=2218&type=wav"
+                    );
+                    audio.play();
+                }
             }, 1000);
         } else if (!isActive && secondsLeft !== 0) {
             clearInterval(interval);

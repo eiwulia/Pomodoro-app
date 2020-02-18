@@ -56,6 +56,8 @@ const ColorDropdown = ({ chooseColor, usedTodoColor, pickNewColor }) => {
         if (usedTodoColor) {
             //edit
             pickNewColor(color);
+        } else if (usedTodoColor === "") {
+            pickNewColor(color);
         } else {
             //add new todo
             chooseColor(color);

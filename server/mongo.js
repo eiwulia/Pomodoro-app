@@ -1,7 +1,9 @@
 const MongoClient = require("mongodb").MongoClient;
+require("dotenv").config();
 
 const settings = { useNewUrlParser: true, useUnifiedTopology: true };
-const url = "mongodb://localhost:27017";
+// const url = "mongodb://localhost:27017";
+const url = process.env.MONGO_URL;
 
 const addUser = (user, callBack) => {
     MongoClient.connect(url, settings, (error, client) => {

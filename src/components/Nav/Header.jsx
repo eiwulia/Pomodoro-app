@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/tomatoe.png";
 import Dialog from "../Login/Dialog";
 
 const Header = ({ user, userStateUpdater, tomPoints }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [totalPoints, setTotalPoints] = useState(0);
 
     const logIn = () => {
         setIsOpen(true);
@@ -17,7 +18,14 @@ const Header = ({ user, userStateUpdater, tomPoints }) => {
     const logOut = () => {
         localStorage.removeItem("user");
         userStateUpdater(null);
+        setTotalPoints(0);
     };
+
+    useEffect(() => {
+        if (user) {
+            setTotalPoints(tomPoints);
+        }
+    }, [user, tomPoints]);
 
     return (
         <div className="ui secondary menu">
@@ -37,7 +45,9 @@ const Header = ({ user, userStateUpdater, tomPoints }) => {
                         Total &nbsp;&nbsp;&nbsp;&nbsp;
                         <i className="tomatoe-icon icon"></i>
                     </div>
-                    <a className="ui basic black label item">{tomPoints}</a>
+                    <a className="ui basic black label item" href="/contact">
+                        {totalPoints}
+                    </a>
                 </div>
 
                 <Link className="ui item" to="/home">

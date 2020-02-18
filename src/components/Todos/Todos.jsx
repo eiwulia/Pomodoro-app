@@ -28,20 +28,16 @@ const Todos = ({
         setTodoUpdater(value);
         let updatedList;
         if (action === "delete") {
-            console.log("action delete");
             let deletedTodo = todoList.find(todo => todo._id === value._id);
             updatedList = todoList.filter(todo => todo !== deletedTodo);
             setTodoList(updatedList);
         } else if (action === "create") {
-            console.log("action create");
             updatedList = [...todoList, value];
             setTodoList(updatedList);
         } else if (action === "update") {
-            console.log("action update");
             let objIndex = todoList.findIndex(obj => obj.id === value.id);
             todoList[objIndex] = value;
         } else if (action === "tomatoes") {
-            console.log("action tomatoes");
             let objIndex = todoList.findIndex(obj => obj.id === value.id);
             todoList[objIndex] = value;
         }
@@ -65,7 +61,6 @@ const Todos = ({
     }
 
     const onDragEnd = result => {
-        console.log("drag end event");
         const { destination, source, draggableId } = result;
         //check if todo has been dropped outside of the container
         if (!destination) {
@@ -83,7 +78,6 @@ const Todos = ({
         const [removed] = list.splice(source.index, 1);
         list.splice(destination.index, 0, removed);
 
-        console.log("list is: ", list);
         setTodoList(list);
     };
 
@@ -111,7 +105,6 @@ const Todos = ({
     };
 
     const saveTodoOrderToDb = () => {
-        console.log("save order to db");
         if (user && todoList) {
             UpdateTodoOrder(user, todoList);
         }
@@ -125,7 +118,7 @@ const Todos = ({
                 <p>Log in now to start using pomodoro app!</p>
             </div>
         );
-    } else if (user && todos.length === 0) {
+    } else if (user && !todos) {
         todosContent = (
             <div className="todo-centered-content">
                 <h3>Hi {user.userName}!</h3>
@@ -146,7 +139,7 @@ const Todos = ({
         })
             .then(response => response.json())
             .then(json => {
-                console.log("User todos (db): ", json.body.todos);
+                // console.log("User todos (db): ", json.body.todos);
                 setTodoList(json.body.todos);
                 handleTotalTomatoePoints(json.body.totalTomatoes);
                 totalTomPoints(json.body.totalTomatoes);

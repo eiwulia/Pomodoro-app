@@ -30,9 +30,8 @@ const FooterInfo = () => {
                 we store information we collect about your visit to this website
                 for use other than to make it easier for you to use the website
                 through the use of cookies, which you can turn off at anytime by
-                modifying your internet browser's settings. We use cookies for
-                functional purposes. We save tasks and user login status to make
-                user experience smoother and to make it easier to come back and
+                modifying your internet browser's settings. We use cookies to
+                save user login status and to make it easier to come back and
                 use the website. This privacy policy is subject to change
                 without notice.
             </p>
