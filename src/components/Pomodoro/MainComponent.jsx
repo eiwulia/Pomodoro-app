@@ -10,9 +10,9 @@ const MainComponent = ({ selectedTodo, handleTomatoesPoints }) => {
         return minutes + ":" + seconds;
     };
 
-    const [workMinutes] = useState(0.2);
+    const [workMinutes] = useState(25);
     const [workColor] = useState("red");
-    const [breakMinutes] = useState(0.2);
+    const [breakMinutes] = useState(5);
     const [breakColor] = useState("green");
     const [countDownTime, setCountDownTime] = useState(workMinutes);
     const [secondsLeft, setSecondsLeft] = useState(countDownTime * 60);
